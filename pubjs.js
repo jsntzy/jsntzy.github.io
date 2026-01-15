@@ -306,7 +306,26 @@ function insertAfterSecond(targetSelector, newElement) {
     target.append(newElement); // 如果少于两个子节点，追加到最后
   }
 }
-       
+ 
+function getcarddata(e){ 	     
+	    const _id=e.data.id;
+      var card=$('[data-id="'+_id+'"]'); 
+      var likec=card.find(".likec");
+			const parts = likec.text().split(' ');  
+			var Cdata=GetCommData(_id);  
+      var pdatas={
+      	rid:_id,
+      	gname:author,
+      	content:card.find('#c'+_id).html(),
+      	picture:card.find('.card-image').attr('src'),
+      	likes:parts[0],
+      	comments:parts[3],
+      	data:Cdata
+      }    
+      saveDataToLocal("detailData",pdatas);
+      window.location.href="detail.html" 	     
+}      
+					  
        // 创建卡片元素
 function createCardElement(card, isFeatured = false) {
     const classes = `waterfall-card fade-in ${isFeatured ? 'featured-card' : ''} card-${card.type}`;    
@@ -316,17 +335,20 @@ function createCardElement(card, isFeatured = false) {
         'data-id': card.id
     });   
     if (card.image) {
-        $('<img>', {
+        var cimg=$('<img>', {
             src: card.image,
-            alt: `${card.title}图片展示`,
-            class: 'card-image w-full'
-        }).appendTo($cardElement);
+            alt: card.title,
+            class: 'card-image w-full cursor-pointer'
+        });
+        cimg.appendTo($cardElement);
+        cimg.on('click',{id:card.id},getcarddata); 
     }   
     const $contentDiv = $('<div>', { class: 'p-3' }).appendTo($cardElement);   
    // $('<h3>', {   class: 'card-title text-xl font-bold mb-3',    text: card.title }).appendTo($contentDiv);
     
     $('<p>', {
         class: 'card-text whitespace-pre-line text-gray-600 mb-4',
+        id:'c'+card.id,
         text: card.content
     }).appendTo($contentDiv);
     
@@ -478,11 +500,18 @@ function createCardElement(card, isFeatured = false) {
 		function saveGuestName(key, value) {
 		    localStorage.setItem(key, value);
 		}
-		
+		function saveDataToLocal(key, value) {
+		    localStorage.setItem(key, JSON.stringify(value));
+		}	
 		// 读取数据
+			// 读取数据
 		function getGuestName(key) {
 		    const data = localStorage.getItem(key);
 		    return data ? data : '';
+		}	
+		function getDatafromLocal(key) {
+		    const data = localStorage.getItem(key);
+		    return data ? $.parseJSON(data) : '';
 		}
 		
 		//生成弹窗内的元素
@@ -536,3 +565,15 @@ function createCardElement(card, isFeatured = false) {
 			}
 			return commDiv;
 		}
+		
+		//根据ID生成详情页面所需的json数据
+		function getDetailData(_id)
+		{
+			
+		}
+		
+    $('#modalOverlay').on('click', function(event) {
+        if (event.target === modalOverlay) {
+            hideModal('#modalOverlay');
+        }
+    });
