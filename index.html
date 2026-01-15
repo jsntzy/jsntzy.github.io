@@ -307,6 +307,10 @@
     })      
                           
         function popup(){
+         	  if(author==''){
+       	  	authorWin();
+       	  	return;
+       	  }         	
         	makeform([{type:'image',id:'imageFile',title:'どんなようせいをみつけた？',tip:'写真をアップロード'},
         	{type:'text',id:'commitMessage',title:'ひとことでみなにおしえてね～～～',tip:'ひとことでみなにおしえてね～～～2'}
         	]);
